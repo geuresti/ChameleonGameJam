@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://ciwrsfwu27kyo"]
+
+[ext_resource type="Texture2D" uid="uid://dwcg5fhei73v5" path="res://Sprites/chameleon.png" id="1_xtbmj"]
+[ext_resource type="Texture2D" uid="uid://b8prqluvwkji8" path="res://Sprites/arrow.png" id="2_jabux"]
+[ext_resource type="Script" uid="uid://diqm7knryoc7t" path="res://indicator.gd" id="3_prowl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jabux"]
+atlas = ExtResource("1_xtbmj")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_prowl"]
+atlas = ExtResource("1_xtbmj")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_oajcp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jabux")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_prowl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_prowl"]
+radius = 2.90909
+
+[node name="Player" type="Node2D"]
+
+[node name="Chameleon" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1.0625, 1.0625)
+sprite_frames = SubResource("SpriteFrames_oajcp")
+
+[node name="Indicator" type="Sprite2D" parent="."]
+scale = Vector2(0.6875, 1)
+texture = ExtResource("2_jabux")
+script = ExtResource("3_prowl")
+
+[node name="IndicatorTip" type="Area2D" parent="Indicator"]
+position = Vector2(0, -13)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Indicator/IndicatorTip"]
+shape = SubResource("CircleShape2D_prowl")
+
+[node name="Tongue" type="Line2D" parent="."]
+default_color = Color(0, 0.862745, 0.745098, 1)
