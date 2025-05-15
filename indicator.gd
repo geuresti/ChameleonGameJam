@@ -1,52 +1,102 @@
 extends Sprite2D
 
 @export var radius: int = 50
-@export var speed: int = 2
-@export var angle_range: float = 60.0
+@export var speed: int = 1
 
 @onready var player_node = get_parent()
 @onready var chameleon = get_parent().get_node("Chameleon")
 @onready var tongue = get_parent().get_node("Tongue")
 
+@onready var tongue_hitbox = get_parent().get_node("TongueHitBox")
+
 @onready var indicator_tip = get_node("IndicatorTip")
 
+var angle_range: float = 60.0
+
 var time := 0.0
-var is_firing := true
 var fire_time := 0.0
 
-var shot_duration := 1 
+var is_extending := false
+var is_retracting := false
 
 var angle := 0.0
 var indicator_offset := Vector2()
-var frozen_direction := Vector2()
+
+# Gives a fixed tongue size for testing
+# Later, the tongue needs to extend until it collides with an object
+@export var length : int = 6
+
+var extend_duration := 0.5
+var retract_duration := 0.3
+
+var tongue_start := Vector2()
+var tongue_end := Vector2()
 
 func _process(delta):
 	time += delta * speed
 	angle = deg_to_rad(sin(time) * angle_range)
 	indicator_offset = Vector2(cos(angle - PI / 2), sin(angle - PI / 2)) * radius
 	
-	if is_firing:
-		fire_time += delta
-		#tongue.add_point(indicator_tip.position)
-		tongue.add_point(Vector2(0,0)) # Looks a bit better, angle is more in line w indicator
-		tongue.add_point((global_position - chameleon.global_position) * 3) 
-		
-		# Reset tongue after shot ends
-		if fire_time >= shot_duration:
-			is_firing = false
-			tongue.visible = false
-			tongue.clear_points()
-			fire_time = 0.0
-	else:
+	# Swing the indicator back and forth while tongue is not extending or retracting
+	if not is_extending and not is_retracting:
 		global_position = chameleon.global_position + indicator_offset
 		rotation = angle
+	
+	# Tongue has been triggered and is extending
+	if is_extending:
+		fire_time += delta
+		# Time remaning until the extension is complete
+		var t = fire_time / extend_duration
+	
+		# Extension is complete, being retraction
+		if t >= 1.0:
+			is_extending = false
+			is_retracting = true
+			fire_time = 0.0
+		
+		# Extend the tongue from the start to end position
+		var curr_tongue_tip = tongue_start.lerp(tongue_end, t)
+		
+		tongue_hitbox.global_position = curr_tongue_tip + chameleon.global_position
+		
+		tongue.clear_points()
+		tongue.add_point(tongue_start)
+		tongue.add_point(curr_tongue_tip)
+		
+	elif is_retracting:
+		fire_time += delta
+		
+		# Time remaning until the retaction is complete
+		var t = fire_time / retract_duration
+
+		# Retract duration has exceeded
+		if t >= 1.0:
+			tongue.visible = false
+			tongue.clear_points()
+			is_retracting = false
+			fire_time = 0.0
+		# Retract tongue
+		else:
+			# Interpolate between bease and tip by animation progress percentage
+			var curr_tongue_tip = tongue_start.lerp(tongue_end, 1.0 - t)
+			
+			tongue_hitbox.global_position = curr_tongue_tip + chameleon.global_position
+		
+			tongue.clear_points()
+			tongue.add_point(tongue_start)
+			tongue.add_point(curr_tongue_tip)
 
 func _input(event):
 	if event.is_action_pressed("fire_tongue"):
 		fire_tongue()
+	if event.is_action_pressed("ui_down"):
+		print("ui down")
+		tongue.clear_points()
 
 func fire_tongue():
-	print("tongue is fired")
-	is_firing = true
-	fire_time = 0.0
-	tongue.visible = true
+	if not is_extending and not is_retracting:
+		is_extending = true
+		fire_time = 0.0
+		tongue.visible = true
+		tongue_start = Vector2(0,0)
+		tongue_end = (global_position - chameleon.global_position) * length

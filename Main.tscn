@@ -1,8 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://d4lgjyvh76sqk"]
+[gd_scene load_steps=3 format=3 uid="uid://d4lgjyvh76sqk"]
 
 [ext_resource type="PackedScene" uid="uid://ciwrsfwu27kyo" path="res://Chameleon.tscn" id="1_glv2v"]
+[ext_resource type="PackedScene" uid="uid://1ffcnglab8gq" path="res://Fly.tscn" id="2_uu6xs"]
 
 [node name="Main" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
-position = Vector2(534, 277)
+position = Vector2(531, 437)
+
+[node name="Fly" parent="." instance=ExtResource("2_uu6xs")]
+position = Vector2(529, 358)
+
+[node name="Fly2" parent="." instance=ExtResource("2_uu6xs")]
+position = Vector2(577, 362)
+
+[node name="Fly3" parent="." instance=ExtResource("2_uu6xs")]
+position = Vector2(480, 365)
