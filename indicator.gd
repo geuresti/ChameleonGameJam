@@ -32,6 +32,10 @@ var retract_duration := 0.3
 var tongue_start := Vector2()
 var tongue_end := Vector2()
 
+func _ready():
+	# Add to singleton to make it globally accessible
+	Global.chameleon = chameleon
+
 func _process(delta):
 	time += delta * speed
 	angle = deg_to_rad(sin(time) * angle_range)
@@ -42,7 +46,7 @@ func _process(delta):
 		global_position = chameleon.global_position + indicator_offset
 		rotation = angle
 	
-	# Tongue has been triggered and is extending
+	# Tongue extension
 	if is_extending:
 		fire_time += delta
 		# Time remaning until the extension is complete
@@ -62,7 +66,8 @@ func _process(delta):
 		tongue.clear_points()
 		tongue.add_point(tongue_start)
 		tongue.add_point(curr_tongue_tip)
-		
+	
+	# Tongue retraction
 	elif is_retracting:
 		fire_time += delta
 		
@@ -93,6 +98,7 @@ func _input(event):
 		print("ui down")
 		tongue.clear_points()
 
+# Fire tongue
 func fire_tongue():
 	if not is_extending and not is_retracting:
 		is_extending = true
@@ -100,3 +106,10 @@ func fire_tongue():
 		tongue.visible = true
 		tongue_start = Vector2(0,0)
 		tongue_end = (global_position - chameleon.global_position) * length
+
+# Fly caught by tongue
+func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
+	if area.name == "FlyHitbox":
+		is_extending = false
+		is_retracting = true
+		#tongue_hitbox.global_position = tongue_end + chameleon.global_position

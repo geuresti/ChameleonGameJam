@@ -1,9 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://ciwrsfwu27kyo"]
+[gd_scene load_steps=10 format=3 uid="uid://ciwrsfwu27kyo"]
 
 [ext_resource type="Texture2D" uid="uid://dwcg5fhei73v5" path="res://Sprites/chameleon.png" id="1_xtbmj"]
 [ext_resource type="Texture2D" uid="uid://b8prqluvwkji8" path="res://Sprites/arrow.png" id="2_jabux"]
 [ext_resource type="Script" uid="uid://diqm7knryoc7t" path="res://indicator.gd" id="3_prowl"]
-[ext_resource type="Texture2D" uid="uid://lpd2asrxxbo5" path="res://Sprites/tongue.png" id="4_ntuaw"]
 [ext_resource type="Texture2D" uid="uid://b6d1ynj2ik6lq" path="res://Sprites/icon.svg" id="4_oajcp"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jabux"]
@@ -41,7 +40,6 @@ scale = Vector2(1.875, 1.875)
 sprite_frames = SubResource("SpriteFrames_oajcp")
 
 [node name="Indicator" type="Sprite2D" parent="."]
-z_index = -2
 scale = Vector2(0.6875, 1)
 texture = ExtResource("2_jabux")
 script = ExtResource("3_prowl")
@@ -53,10 +51,7 @@ position = Vector2(0, -13)
 shape = SubResource("CircleShape2D_prowl")
 
 [node name="Tongue" type="Line2D" parent="."]
-z_index = -1
-width = 96.0
-texture = ExtResource("4_ntuaw")
-texture_mode = 2
+default_color = Color(0, 0.862745, 0.745098, 1)
 
 [node name="TongueHitBox" type="Area2D" parent="."]
 
@@ -65,7 +60,6 @@ self_modulate = Color(1, 0.246, 0.13, 1)
 shape = SubResource("CircleShape2D_oajcp")
 
 [node name="Sprite2D" type="Sprite2D" parent="TongueHitBox"]
-visible = false
 scale = Vector2(0.109375, 0.109375)
 texture = ExtResource("4_oajcp")
 
