@@ -15,10 +15,13 @@ var pull_speed = 300
 # Change later
 var food_value = 10
 
+var collision
+
 @onready var animation_player = get_node("AnimatedSprite2D")
 
 func _ready():
-	randomize_direction()
+	#randomize_direction()
+	velocity = Vector2(1,0) * speed
 	animation_player.play()
 
 func _physics_process(delta):
@@ -35,8 +38,12 @@ func _physics_process(delta):
 			Global.update_score(10)
 			Global.hunger += food_value
 			queue_free()
-	#else:
-	#	move_and_collide(velocity * delta)
+	else:
+		#move_and_collide(velocity * delta)
+		collision = move_and_collide(velocity * delta)
+		if collision:
+			print("BOMBA")
+			velocity = velocity.bounce(collision.get_normal())
 
 func randomize_direction():
 	# Get a random direction
@@ -51,3 +58,5 @@ func randomize_direction():
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.name == "TongueHitBox":
 		is_being_pulled = true
+		# Ignore borders (prevents fly from being stopped by bottom border)
+		set_collision_mask_value(1, false)
