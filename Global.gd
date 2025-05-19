@@ -9,6 +9,9 @@ var hunger_rate := 5.0
 @onready var score_label = get_node("/root/Main/HUD/Score")
 @onready var hunger_bar = get_node("/root/Main/HUD/HungerBar")
 
+var tongue_start: Vector2
+var tongue_end: Vector2
+
 func _ready():
 	hunger_bar.value = 100
 
@@ -39,4 +42,5 @@ func update_score_label(target):
 	score_label.text = "Score: %d" % target
 
 func game_over():
-	print("GAME OVER")
+	#print("GAME OVER")
+	pass

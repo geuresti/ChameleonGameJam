@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://dwcg5fhei73v5" path="res://Sprites/chameleon.png" id="1_xtbmj"]
 [ext_resource type="Texture2D" uid="uid://b8prqluvwkji8" path="res://Sprites/arrow.png" id="2_jabux"]
 [ext_resource type="Script" uid="uid://diqm7knryoc7t" path="res://indicator.gd" id="3_prowl"]
-[ext_resource type="Texture2D" uid="uid://lpd2asrxxbo5" path="res://Sprites/tongue.png" id="4_ntuaw"]
-[ext_resource type="Texture2D" uid="uid://b6d1ynj2ik6lq" path="res://Sprites/icon.svg" id="4_oajcp"]
+[ext_resource type="Texture2D" uid="uid://j23i6wdiiniv" path="res://Sprites/tongue_tile.png" id="4_ntuaw"]
+[ext_resource type="Texture2D" uid="uid://p36lrnq5ed5c" path="res://Sprites/tongue_end.png" id="5_ntuaw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jabux"]
 atlas = ExtResource("1_xtbmj")
@@ -52,11 +52,15 @@ position = Vector2(0, -13)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Indicator/IndicatorTip"]
 shape = SubResource("CircleShape2D_prowl")
 
+[node name="RayCast2D" type="RayCast2D" parent="Indicator"]
+scale = Vector2(1.45455, 1)
+collision_mask = 2
+
 [node name="Tongue" type="Line2D" parent="."]
 z_index = -1
 width = 96.0
 texture = ExtResource("4_ntuaw")
-texture_mode = 2
+texture_mode = 1
 
 [node name="TongueHitBox" type="Area2D" parent="."]
 
@@ -65,8 +69,7 @@ self_modulate = Color(1, 0.246, 0.13, 1)
 shape = SubResource("CircleShape2D_oajcp")
 
 [node name="Sprite2D" type="Sprite2D" parent="TongueHitBox"]
-visible = false
-scale = Vector2(0.109375, 0.109375)
-texture = ExtResource("4_oajcp")
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("5_ntuaw")
 
 [connection signal="area_entered" from="TongueHitBox" to="Indicator" method="_on_tongue_hit_box_area_entered"]

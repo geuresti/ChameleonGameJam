@@ -11,6 +11,8 @@ extends Sprite2D
 
 @onready var indicator_tip = get_node("IndicatorTip")
 
+@onready var raycast = get_node("RayCast2D")
+
 var angle_range: float = 60.0
 
 var time := 0.0
@@ -22,14 +24,15 @@ var is_retracting := false
 var angle := 0.0
 var indicator_offset := Vector2()
 
-# Gives a fixed tongue size for testing
-# Later, the tongue needs to extend until it collides with an object
-@export var length : int = 6
+const IDLE = 0
+const FIRING = 1
 
-var extend_duration := 0.5
+var extend_duration := 1.0
 var retract_duration := 0.3
 
-var tongue_start := Vector2()
+#var tongue_start := Vector2()
+var tongue_start := Vector2.ZERO
+
 var tongue_end := Vector2()
 
 func _ready():
@@ -37,17 +40,30 @@ func _ready():
 	Global.chameleon = chameleon
 
 func _process(delta):
-	time += delta * speed
-	angle = deg_to_rad(sin(time) * angle_range)
-	indicator_offset = Vector2(cos(angle - PI / 2), sin(angle - PI / 2)) * radius
-	
 	# Swing the indicator back and forth while tongue is not extending or retracting
 	if not is_extending and not is_retracting:
+		self.visible = true
+		time += delta * speed
+		angle = deg_to_rad(sin(time) * angle_range)
+		indicator_offset = Vector2(cos(angle - PI / 2), sin(angle - PI / 2)) * radius
+		
 		global_position = chameleon.global_position + indicator_offset
 		rotation = angle
-	
+		
+		# Position and rotate the raycast to match the indicator
+		var direction = (indicator_tip.global_position - global_position - chameleon.global_position).rotated(deg_to_rad(45))
+		raycast.target_position = direction * 700
+		
+		# Raycast should always be hitting one of the borders
+		if raycast.is_colliding():
+			tongue_end = raycast.get_collision_point() - chameleon.global_position
+	else:
+		self.visible = false
+
 	# Tongue extension
 	if is_extending:
+		chameleon.frame = FIRING
+		
 		fire_time += delta
 		# Time remaning until the extension is complete
 		var t = fire_time / extend_duration
@@ -69,6 +85,7 @@ func _process(delta):
 	
 	# Tongue retraction
 	elif is_retracting:
+		chameleon.frame = IDLE
 		fire_time += delta
 		
 		# Time remaning until the retaction is complete
@@ -86,7 +103,7 @@ func _process(delta):
 			var curr_tongue_tip = tongue_start.lerp(tongue_end, 1.0 - t)
 			
 			tongue_hitbox.global_position = curr_tongue_tip + chameleon.global_position
-		
+			
 			tongue.clear_points()
 			tongue.add_point(tongue_start)
 			tongue.add_point(curr_tongue_tip)
@@ -101,15 +118,16 @@ func _input(event):
 # Fire tongue
 func fire_tongue():
 	if not is_extending and not is_retracting:
+		#Global.tongue_start = tongue_start + chameleon.global_position
+		#Global.tongue_end = tongue_end + chameleon.global_position
 		is_extending = true
 		fire_time = 0.0
 		tongue.visible = true
-		tongue_start = Vector2(0,0)
-		tongue_end = (global_position - chameleon.global_position) * length
 
 # Fly caught by tongue
 func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
 	if area.name == "FlyHitbox":
 		is_extending = false
 		is_retracting = true
+		fire_time = 0.0
 		#tongue_hitbox.global_position = tongue_end + chameleon.global_position
