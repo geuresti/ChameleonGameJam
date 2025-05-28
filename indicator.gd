@@ -28,7 +28,7 @@ const IDLE = 0
 const FIRING = 1
 
 var extend_duration := 1.0
-var retract_duration := 0.3
+var retract_duration := 1.0
 
 #var tongue_start := Vector2()
 var tongue_start := Vector2.ZERO
@@ -38,6 +38,9 @@ var tongue_end := Vector2()
 func _ready():
 	# Add to singleton to make it globally accessible
 	Global.chameleon = chameleon
+	Global.tongueHitBox = tongue_hitbox.global_position
+	print("CHAMELEON:", chameleon.global_position)
+	print("THB:", Global.tongueHitBox)
 
 func _process(delta):
 	# Swing the indicator back and forth while tongue is not extending or retracting
@@ -54,11 +57,14 @@ func _process(delta):
 		var direction = (indicator_tip.global_position - global_position - chameleon.global_position).rotated(deg_to_rad(45))
 		raycast.target_position = direction * 700
 		
+		tongue_hitbox.visible = false
+		
 		# Raycast should always be hitting one of the borders
 		if raycast.is_colliding():
 			tongue_end = raycast.get_collision_point() - chameleon.global_position
 	else:
 		self.visible = false
+		tongue_hitbox.visible = true
 
 	# Tongue extension
 	if is_extending:
@@ -88,9 +94,11 @@ func _process(delta):
 		chameleon.frame = IDLE
 		fire_time += delta
 		
+		Global.tongueHitBox = tongue_hitbox.global_position
+		
 		# Time remaning until the retaction is complete
 		var t = fire_time / retract_duration
-
+		
 		# Retract duration has exceeded
 		if t >= 1.0:
 			tongue.visible = false
@@ -99,7 +107,7 @@ func _process(delta):
 			fire_time = 0.0
 		# Retract tongue
 		else:
-			# Interpolate between bease and tip by animation progress percentage
+			# Interpolate between base and tip by animation progress percentage
 			var curr_tongue_tip = tongue_start.lerp(tongue_end, 1.0 - t)
 			
 			tongue_hitbox.global_position = curr_tongue_tip + chameleon.global_position
@@ -130,4 +138,6 @@ func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
 		is_extending = false
 		is_retracting = true
 		fire_time = 0.0
+		
+		tongue_end = area.global_position - global_position
 		#tongue_hitbox.global_position = tongue_end + chameleon.global_position

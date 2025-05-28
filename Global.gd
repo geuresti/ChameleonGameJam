@@ -12,6 +12,8 @@ var hunger_rate := 5.0
 var tongue_start: Vector2
 var tongue_end: Vector2
 
+var tongueHitBox: Vector2
+
 func _ready():
 	hunger_bar.value = 100
 
