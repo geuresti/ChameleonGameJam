@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4lgjyvh76sqk"]
+[gd_scene load_steps=11 format=3 uid="uid://d4lgjyvh76sqk"]
 
+[ext_resource type="Script" uid="uid://ctxwxf0nttbqn" path="res://game_loop.gd" id="1_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://ciwrsfwu27kyo" path="res://Chameleon.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://gyqh3mcs7v1g" path="res://Sprites/Rainforest.png" id="1_r0du0"]
 [ext_resource type="PackedScene" uid="uid://1ffcnglab8gq" path="res://Fly.tscn" id="2_uu6xs"]
@@ -19,9 +20,14 @@ size = Vector2(684.75, 28)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fos0i"]
 size = Vector2(1182, 26)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
+size = Vector2(137.25, 122.5)
+
 [node name="Main" type="Node2D"]
+script = ExtResource("1_cm0pq")
 
 [node name="Background" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.737255)
 z_index = -100
 offset_left = -12.0
 offset_top = -75.0
@@ -31,21 +37,6 @@ texture = ExtResource("1_r0du0")
 
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
 position = Vector2(571, 570)
-
-[node name="Fly" parent="." instance=ExtResource("2_uu6xs")]
-position = Vector2(514, 402)
-
-[node name="Fly2" parent="." instance=ExtResource("2_uu6xs")]
-position = Vector2(570, 399)
-
-[node name="Fly3" parent="." instance=ExtResource("2_uu6xs")]
-position = Vector2(619, 403)
-
-[node name="Fly4" parent="." instance=ExtResource("2_uu6xs")]
-position = Vector2(532, 367)
-
-[node name="Fly5" parent="." instance=ExtResource("2_uu6xs")]
-position = Vector2(597, 365)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -86,3 +77,14 @@ shape = SubResource("RectangleShape2D_cm0pq")
 [node name="BottomBorder" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(576, 453)
 shape = SubResource("RectangleShape2D_fos0i")
+
+[node name="Fly" parent="." instance=ExtResource("2_uu6xs")]
+position = Vector2(514, 391)
+
+[node name="FlySpawnArea" type="Area2D" parent="."]
+position = Vector2(562, 243)
+
+[node name="FlySpawnAreaShape" type="CollisionShape2D" parent="FlySpawnArea"]
+position = Vector2(-403.625, 38.25)
+shape = SubResource("RectangleShape2D_3dxm6")
+debug_color = Color(0.977345, 0, 0.404842, 0.42)

@@ -18,7 +18,9 @@ var collision
 @onready var animation_player = get_node("AnimatedSprite2D")
 
 func _ready():
-	velocity = Vector2(1,0) * speed
+	# Hardcoded rightward movement for testing
+	#velocity = Vector2(1,0) * speed
+	#randomize_direction()
 	animation_player.play()
 
 func _physics_process(delta):
@@ -39,6 +41,9 @@ func _physics_process(delta):
 			velocity = velocity.bounce(collision.get_normal())
 
 func randomize_direction():
+	# Set fly to be able to collide with the borders
+	set_collision_mask_value(1, true)
+	
 	# Get a random direction
 	random_dir = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
 	velocity = random_dir * speed
@@ -46,6 +51,12 @@ func randomize_direction():
 	# Create timer of length "craziness" then call randomize_direction()
 	await get_tree().create_timer(craziness).timeout
 	randomize_direction()
+
+func move_to(pos: Vector2) -> void:
+	# Tween for fly position
+	var tween = get_tree().create_tween()
+	#var target_pos = Vector2(300, 400)
+	tween.tween_property(self, "position", pos, 1.0)
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.name == "TongueHitBox":
