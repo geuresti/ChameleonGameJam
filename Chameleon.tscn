@@ -35,6 +35,7 @@ radius = 2.90909
 radius = 3.0
 
 [node name="Player" type="Node2D"]
+scale = Vector2(1.5, 1.5)
 
 [node name="Chameleon" type="AnimatedSprite2D" parent="."]
 z_index = 10

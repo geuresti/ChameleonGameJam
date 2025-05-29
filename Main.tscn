@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://d4lgjyvh76sqk"]
+[gd_scene load_steps=12 format=3 uid="uid://d4lgjyvh76sqk"]
 
-[ext_resource type="Script" uid="uid://ctxwxf0nttbqn" path="res://game_loop.gd" id="1_cm0pq"]
+[ext_resource type="Script" uid="uid://ctxwxf0nttbqn" path="res://game.gd" id="1_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://ciwrsfwu27kyo" path="res://Chameleon.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://gyqh3mcs7v1g" path="res://Sprites/Rainforest.png" id="1_r0du0"]
 [ext_resource type="PackedScene" uid="uid://1ffcnglab8gq" path="res://Fly.tscn" id="2_uu6xs"]
+[ext_resource type="Texture2D" uid="uid://cj72jswyklq8m" path="res://Sprites/placeholder.png" id="4_fos0i"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uu6xs"]
 bg_color = Color(0.936458, 0.432818, 0, 1)
@@ -21,7 +22,7 @@ size = Vector2(684.75, 28)
 size = Vector2(1182, 26)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
-size = Vector2(137.25, 122.5)
+size = Vector2(390, 122.5)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cm0pq")
@@ -29,9 +30,9 @@ script = ExtResource("1_cm0pq")
 [node name="Background" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.737255)
 z_index = -100
-offset_left = -12.0
+offset_left = -22.0
 offset_top = -75.0
-offset_right = 1182.0
+offset_right = 1172.0
 offset_bottom = 801.0
 texture = ExtResource("1_r0du0")
 
@@ -41,20 +42,43 @@ position = Vector2(571, 570)
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="Score" type="Label" parent="HUD"]
-offset_left = 25.0
-offset_top = 24.0
-offset_right = 65.0
-offset_bottom = 47.0
+z_index = 1
+offset_left = 20.0
+offset_top = 25.0
+offset_right = 81.0
+offset_bottom = 48.0
 text = "Score: 0"
 
 [node name="HungerBar" type="ProgressBar" parent="HUD"]
-offset_left = 1086.0
+z_index = 1
+offset_left = 1081.0
 offset_top = 23.0
-offset_right = 1129.0
+offset_right = 1124.0
 offset_bottom = 145.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_uu6xs")
 value = 86.0
 fill_mode = 3
+
+[node name="Timer" type="Label" parent="HUD"]
+z_index = 1
+offset_left = 20.0
+offset_top = 75.0
+offset_right = 170.0
+offset_bottom = 98.0
+text = "Time Remaining: 0s"
+
+[node name="Wave" type="Label" parent="HUD"]
+z_index = 1
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 80.0
+offset_bottom = 73.0
+text = "Wave: 1"
+
+[node name="HUD_BG" type="Sprite2D" parent="HUD"]
+position = Vector2(96, 59)
+scale = Vector2(3.4, -2)
+texture = ExtResource("4_fos0i")
 
 [node name="Borders" type="StaticBody2D" parent="."]
 collision_layer = 3
@@ -79,12 +103,12 @@ position = Vector2(576, 453)
 shape = SubResource("RectangleShape2D_fos0i")
 
 [node name="Fly" parent="." instance=ExtResource("2_uu6xs")]
-position = Vector2(514, 391)
+position = Vector2(703, 405)
 
 [node name="FlySpawnArea" type="Area2D" parent="."]
 position = Vector2(562, 243)
 
 [node name="FlySpawnAreaShape" type="CollisionShape2D" parent="FlySpawnArea"]
-position = Vector2(-403.625, 38.25)
+position = Vector2(0, -30)
 shape = SubResource("RectangleShape2D_3dxm6")
 debug_color = Color(0.977345, 0, 0.404842, 0.42)

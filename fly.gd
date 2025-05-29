@@ -27,7 +27,7 @@ func _physics_process(delta):
 	# Get pulled by tongue
 	if is_being_pulled:
 		global_position = Global.tongueHitBox
-		print("FLY:", global_position)
+		#print("FLY:", global_position)
 		
 		# Get eaten by the Chameleon
 		if global_position.distance_to(Global.chameleon.global_position) < 5:

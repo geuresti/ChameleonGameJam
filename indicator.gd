@@ -28,11 +28,9 @@ const IDLE = 0
 const FIRING = 1
 
 var extend_duration := 1.0
-var retract_duration := 1.0
+var retract_duration := 0.5
 
-#var tongue_start := Vector2()
 var tongue_start := Vector2.ZERO
-
 var tongue_end := Vector2()
 
 func _ready():
@@ -68,6 +66,9 @@ func _process(delta):
 
 	# Tongue extension
 	if is_extending:
+		tongue_hitbox.set_collision_mask_value(1, true)
+		tongue_hitbox.set_collision_layer_value(1, true)
+		
 		chameleon.frame = FIRING
 		
 		fire_time += delta
@@ -91,6 +92,9 @@ func _process(delta):
 	
 	# Tongue retraction
 	elif is_retracting:
+		tongue_hitbox.set_collision_mask_value(1, false)
+		tongue_hitbox.set_collision_layer_value(1, false)
+		
 		chameleon.frame = IDLE
 		fire_time += delta
 		
@@ -126,8 +130,6 @@ func _input(event):
 # Fire tongue
 func fire_tongue():
 	if not is_extending and not is_retracting:
-		#Global.tongue_start = tongue_start + chameleon.global_position
-		#Global.tongue_end = tongue_end + chameleon.global_position
 		is_extending = true
 		fire_time = 0.0
 		tongue.visible = true
@@ -140,4 +142,3 @@ func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
 		fire_time = 0.0
 		
 		tongue_end = area.global_position - global_position
-		#tongue_hitbox.global_position = tongue_end + chameleon.global_position

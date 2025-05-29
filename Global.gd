@@ -5,8 +5,11 @@ var chameleon : AnimatedSprite2D = null
 var score := 0
 var hunger := 100.0
 var hunger_rate := 5.0
+var wave := 1
 
 @onready var score_label = get_node("/root/Main/HUD/Score")
+@onready var wave_label = get_node("/root/Main/HUD/Wave")
+
 @onready var hunger_bar = get_node("/root/Main/HUD/HungerBar")
 
 var tongue_start: Vector2
@@ -18,6 +21,7 @@ func _ready():
 	hunger_bar.value = 100
 
 func _process(delta):
+	
 	if hunger > 0:
 		hunger -= hunger_rate * delta
 		hunger = max(hunger, 0)
@@ -40,8 +44,11 @@ func update_score(points):
 	
 	score += points
 
-func update_score_label(target):
-	score_label.text = "Score: %d" % target
+func update_score_label(new_score):
+	score_label.text = "Score: %d" % new_score
+
+func update_wave_label():
+	wave_label.text = "Wave: %d" % wave
 
 func game_over():
 	#print("GAME OVER")
