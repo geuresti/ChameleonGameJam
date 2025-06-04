@@ -24,7 +24,7 @@ var dist_right : float
 
 var flies_per_wave = 12
 var wave_delay = 3
-var wave_duration = 6
+var wave_duration = 4
 
 var wave_timer = 0.0
 var wave_active = false
@@ -39,20 +39,17 @@ var y : float
 var target : Vector2
 
 func _ready():
-	start_wave()
+	#start_wave()
 	wave_timer = wave_duration
 
 func _process(delta):
-	
 	# Wave timer and label logic
-	timer_label.text = "Time Remaining: %ds" % wave_timer
-	wave_timer -= delta
+	if wave_active:
+		timer_label.text = "Time Remaining: %ds" % wave_timer
+		wave_timer -= delta
 	
 	# The wave timer hit 0
-	if wave_timer < 0:
-		Global.wave += 1
-		Global.update_wave_label()
-		wave_timer = wave_duration
+	if wave_timer < 0 and wave_active:
 		end_wave()
 
 func get_random_stage_pos():
@@ -60,26 +57,47 @@ func get_random_stage_pos():
 	y = randf_range(y_start, y_end)
 	return Vector2(x, y)
 
-func get_random_edge_pos(fly_pos):
-	
-	var side = randi_range(0, 2)
-	
-	# get_viewport().size.x
-	
+func get_closest_edge_pos(fly_pos):
 	dist_left = fly_pos.distance_to(border_left.global_position)
 	dist_top = fly_pos.distance_to(border_top.global_position)
 	dist_right = fly_pos.distance_to(border_right.global_position)
 
-	var a = min(dist_left, dist_top, dist_right)
-	print("CLOSEST TO:", a)
+	var closest_edge = min(dist_left, dist_top, dist_right)
 	
-	return a
+	if closest_edge == dist_left:
+		#return Vector2(border_left.global_position.x, fly_pos.y)
+		return Vector2(-100, fly_pos.y)
+	elif closest_edge == dist_right:
+		return Vector2(border_right.global_position.x + 100, fly_pos.y)
+	else:
+		return Vector2(fly_pos.x, -100)
+
+func get_random_edge_pos(fly_pos):
+	var random_edge = randi() % 3
+	
+	match(random_edge):
+		LEFT:
+			return Vector2(-100, fly_pos.y)
+		TOP:
+			return Vector2(border_right.global_position.x + 100, fly_pos.y)
+		RIGHT:
+			return Vector2(fly_pos.x, -100)
+
+# Free all the objects and reset the array
+func clear_flies():
+	for fly in flies:
+		fly.queue_free()
+	flies.clear()
 
 func start_wave():
-	wave_active = false
-	flies.clear()
+	wave_active = true
+	clear_flies()
 	
-	for i in 1:
+	Global.wave += 1
+	Global.update_wave_label()
+	wave_timer = wave_duration
+	
+	for i in flies_per_wave:
 		var fly = fly_scene.instantiate()
 		add_child(fly)
 		
@@ -96,10 +114,20 @@ func start_wave():
 
 func end_wave():
 	# chameleon cannot fire
-	# wave_active = false *
+	wave_active = false
+
+	var remaining_flies = []
+	
+	# Remove freed flies
+	for fly in flies:
+		if is_instance_valid(fly):
+			remaining_flies.append(fly)
+	
+	flies = remaining_flies
 	
 	for fly in flies:
-		get_random_edge_pos(fly.global_position)
+		#fly.move_to(get_closest_edge_pos(fly.global_position))
+		fly.move_to(get_random_edge_pos(fly.global_position))
 		
-	#await get_tree().create_timer(2.0).timeout
-	#start_wave()
+	await get_tree().create_timer(wave_delay).timeout
+	start_wave()

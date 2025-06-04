@@ -5,7 +5,7 @@ var chameleon : AnimatedSprite2D = null
 var score := 0
 var hunger := 100.0
 var hunger_rate := 5.0
-var wave := 1
+var wave := 0
 
 @onready var score_label = get_node("/root/Main/HUD/Score")
 @onready var wave_label = get_node("/root/Main/HUD/Wave")

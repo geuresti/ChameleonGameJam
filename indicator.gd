@@ -1,6 +1,6 @@
 extends Sprite2D
 
-@export var radius: int = 50
+@export var indicator_offset_radius: int = 75
 @export var speed: int = 1
 
 @onready var player_node = get_parent()
@@ -29,24 +29,31 @@ const FIRING = 1
 
 var extend_duration := 1.0
 var retract_duration := 0.5
+var t = 0.0
 
 var tongue_start := Vector2.ZERO
 var tongue_end := Vector2()
+
+@onready var test = get_node("RayCast2D/RayCastCollision")
 
 func _ready():
 	# Add to singleton to make it globally accessible
 	Global.chameleon = chameleon
 	Global.tongueHitBox = tongue_hitbox.global_position
-	print("CHAMELEON:", chameleon.global_position)
-	print("THB:", Global.tongueHitBox)
+	#print("CHAMELEON:", chameleon.global_position)
+	#print("THB:", Global.tongueHitBox)
+	tongue.width = 150.0
+
 
 func _process(delta):
+	test.global_position = raycast.get_collision_point()
+	
 	# Swing the indicator back and forth while tongue is not extending or retracting
 	if not is_extending and not is_retracting:
 		self.visible = true
 		time += delta * speed
 		angle = deg_to_rad(sin(time) * angle_range)
-		indicator_offset = Vector2(cos(angle - PI / 2), sin(angle - PI / 2)) * radius
+		indicator_offset = Vector2(cos(angle - PI / 2), sin(angle - PI / 2)) * indicator_offset_radius
 		
 		global_position = chameleon.global_position + indicator_offset
 		rotation = angle
@@ -60,6 +67,7 @@ func _process(delta):
 		# Raycast should always be hitting one of the borders
 		if raycast.is_colliding():
 			tongue_end = raycast.get_collision_point() - chameleon.global_position
+			print(raycast.get_collision_point(), tongue_end + chameleon.global_position)
 	else:
 		self.visible = false
 		tongue_hitbox.visible = true
@@ -73,7 +81,7 @@ func _process(delta):
 		
 		fire_time += delta
 		# Time remaning until the extension is complete
-		var t = fire_time / extend_duration
+		t = fire_time / extend_duration
 	
 		# Extension is complete, being retraction
 		if t >= 1.0:
@@ -101,7 +109,7 @@ func _process(delta):
 		Global.tongueHitBox = tongue_hitbox.global_position
 		
 		# Time remaning until the retaction is complete
-		var t = fire_time / retract_duration
+		t = fire_time / retract_duration
 		
 		# Retract duration has exceeded
 		if t >= 1.0:
