@@ -7,6 +7,11 @@ var hunger := 100.0
 var hunger_rate := 5.0
 var wave := 0
 
+var difficulty = 1
+
+var retract_duration := 0.5
+var extend_duration = 1.0
+
 @onready var score_label = get_node("/root/Main/HUD/Score")
 @onready var wave_label = get_node("/root/Main/HUD/Wave")
 
@@ -15,14 +20,17 @@ var wave := 0
 var tongue_start: Vector2
 var tongue_end: Vector2
 
-var tongueHitBox: Vector2
+var tongue_hitbox: Area2D
+
+var tongue_offset = 18
+
+var is_intermission = false
 
 func _ready():
 	hunger_bar.value = 100
 
 func _process(delta):
-	
-	if hunger > 0:
+	if hunger > 0 and not is_intermission:
 		hunger -= hunger_rate * delta
 		hunger = max(hunger, 0)
 		hunger_bar.value = hunger

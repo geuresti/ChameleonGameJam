@@ -3,6 +3,7 @@ extends Node2D
 var fly_scene = preload("res://Fly.tscn")
 
 @onready var fly_spawn_area = get_node("FlySpawnArea/FlySpawnAreaShape")
+@onready var fly_spawner = get_node("FlySpawner")
 
 @onready var spawn_area_size = fly_spawn_area.shape.extents
 
@@ -18,16 +19,21 @@ var fly_scene = preload("res://Fly.tscn")
 @onready var border_top = get_node("Borders/TopBorder")
 @onready var border_right = get_node("Borders/RightBorder")
 
+@onready var intermission_label = get_node("HUD/Intermission")
+
 var dist_left : float
 var dist_top : float
 var dist_right : float
 
-var flies_per_wave = 12
-var wave_delay = 3
-var wave_duration = 4
+var flies_per_wave
 
-var wave_timer = 0.0
-var wave_active = false
+var intermission_duration = 6
+var intermission_timer
+var start_intermission_timer = false
+
+var wave_duration = 26
+var wave_timer
+
 var flies = []
 
 const LEFT = 0
@@ -39,17 +45,29 @@ var y : float
 var target : Vector2
 
 func _ready():
-	#start_wave()
+	start_wave()
 	wave_timer = wave_duration
+	intermission_timer = intermission_duration
+	intermission_label.visible = false
 
 func _process(delta):
+	if Global.is_intermission and start_intermission_timer:
+		intermission_label.text = "Next Wave In: %ds" % intermission_timer
+		intermission_timer -= delta
+		
+		if intermission_timer < 0:
+			intermission_label.visible = false
+			start_wave()
+			intermission_timer = intermission_duration
+	
 	# Wave timer and label logic
-	if wave_active:
+	elif wave_timer > 0:
 		timer_label.text = "Time Remaining: %ds" % wave_timer
 		wave_timer -= delta
 	
-	# The wave timer hit 0
-	if wave_timer < 0 and wave_active:
+	# If the wave timer hit 0 or all the flies were caught
+	if (wave_timer < 0 and not Global.is_intermission) or (fly_spawner.get_child_count() == 0 and not Global.is_intermission):
+		Global.is_intermission = true
 		end_wave()
 
 func get_random_stage_pos():
@@ -57,6 +75,7 @@ func get_random_stage_pos():
 	y = randf_range(y_start, y_end)
 	return Vector2(x, y)
 
+# CURRENTLY UNUSED
 func get_closest_edge_pos(fly_pos):
 	dist_left = fly_pos.distance_to(border_left.global_position)
 	dist_top = fly_pos.distance_to(border_top.global_position)
@@ -73,6 +92,8 @@ func get_closest_edge_pos(fly_pos):
 		return Vector2(fly_pos.x, -100)
 
 func get_random_edge_pos(fly_pos):
+	
+	# Random int 0, 1, 2
 	var random_edge = randi() % 3
 	
 	match(random_edge):
@@ -83,23 +104,41 @@ func get_random_edge_pos(fly_pos):
 		RIGHT:
 			return Vector2(fly_pos.x, -100)
 
+func get_random_spawn_position():
+	# Random int 0, 1, 2
+	var random_edge = randi() % 3
+	var random_val
+	
+	match(random_edge):
+		LEFT:
+			random_val = randf_range(0, 420)
+			return Vector2(-100, random_val)
+		TOP:
+			random_val = randf_range(100, 1000)
+			return Vector2(random_val, -100)
+		RIGHT:
+			random_val = randf_range(0, 420)
+			return Vector2(1300, random_val)
+
 # Free all the objects and reset the array
 func clear_flies():
 	for fly in flies:
-		fly.queue_free()
+		if is_instance_valid(fly):
+			fly.queue_free()
 	flies.clear()
 
 func start_wave():
-	wave_active = true
-	clear_flies()
-	
 	Global.wave += 1
 	Global.update_wave_label()
 	wave_timer = wave_duration
 	
+	# MIN 6, add more depending on how low on food the player is? w wiggle room. ?
+	flies_per_wave = 6
+	
 	for i in flies_per_wave:
 		var fly = fly_scene.instantiate()
-		add_child(fly)
+		fly_spawner.add_child(fly)
+		fly.global_position = get_random_spawn_position()
 		
 		# Get a random position in the spawn area
 		target = get_random_stage_pos()
@@ -111,23 +150,24 @@ func start_wave():
 		fly.randomize_direction()
 		
 		flies.append(fly)
+	
+	await get_tree().create_timer(1.0).timeout
+	Global.is_intermission = false
+	start_intermission_timer = false
 
 func end_wave():
-	# chameleon cannot fire
-	wave_active = false
-
-	var remaining_flies = []
-	
-	# Remove freed flies
 	for fly in flies:
 		if is_instance_valid(fly):
-			remaining_flies.append(fly)
+			fly.move_to(get_random_edge_pos(fly.global_position))
 	
-	flies = remaining_flies
+	# ! Not sure this actually works.
+	Global.tongue_hitbox.visible = false
 	
-	for fly in flies:
-		#fly.move_to(get_closest_edge_pos(fly.global_position))
-		fly.move_to(get_random_edge_pos(fly.global_position))
-		
-	await get_tree().create_timer(wave_delay).timeout
-	start_wave()
+	# Give any remaining flies time to leave the screen
+	await get_tree().create_timer(1.5).timeout
+	
+	clear_flies()
+	
+	Global.difficulty += 1
+	start_intermission_timer = true
+	intermission_label.visible = true

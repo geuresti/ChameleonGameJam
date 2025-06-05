@@ -27,11 +27,9 @@ var indicator_offset := Vector2()
 const IDLE = 0
 const FIRING = 1
 
-var extend_duration := 1.0
-var retract_duration := 0.5
 var t = 0.0
 
-var tongue_start := Vector2.ZERO
+var tongue_start := Vector2(0, Global.tongue_offset)
 var tongue_end := Vector2()
 
 @onready var test = get_node("RayCast2D/RayCastCollision")
@@ -39,17 +37,17 @@ var tongue_end := Vector2()
 func _ready():
 	# Add to singleton to make it globally accessible
 	Global.chameleon = chameleon
-	Global.tongueHitBox = tongue_hitbox.global_position
-	#print("CHAMELEON:", chameleon.global_position)
-	#print("THB:", Global.tongueHitBox)
-	tongue.width = 150.0
-
+	Global.tongue_hitbox = tongue_hitbox
+	
+	# Adjust tongue components so they are positioned behind the chameleon sprite
+	tongue_start.y -= Global.tongue_offset
+	tongue_hitbox.position.y -= Global.tongue_offset
 
 func _process(delta):
 	test.global_position = raycast.get_collision_point()
 	
 	# Swing the indicator back and forth while tongue is not extending or retracting
-	if not is_extending and not is_retracting:
+	if not is_extending and not is_retracting and not Global.is_intermission:
 		self.visible = true
 		time += delta * speed
 		angle = deg_to_rad(sin(time) * angle_range)
@@ -67,7 +65,6 @@ func _process(delta):
 		# Raycast should always be hitting one of the borders
 		if raycast.is_colliding():
 			tongue_end = raycast.get_collision_point() - chameleon.global_position
-			print(raycast.get_collision_point(), tongue_end + chameleon.global_position)
 	else:
 		self.visible = false
 		tongue_hitbox.visible = true
@@ -81,7 +78,7 @@ func _process(delta):
 		
 		fire_time += delta
 		# Time remaning until the extension is complete
-		t = fire_time / extend_duration
+		t = fire_time / Global.extend_duration
 	
 		# Extension is complete, being retraction
 		if t >= 1.0:
@@ -106,10 +103,8 @@ func _process(delta):
 		chameleon.frame = IDLE
 		fire_time += delta
 		
-		Global.tongueHitBox = tongue_hitbox.global_position
-		
 		# Time remaning until the retaction is complete
-		t = fire_time / retract_duration
+		t = fire_time / Global.retract_duration
 		
 		# Retract duration has exceeded
 		if t >= 1.0:
@@ -137,7 +132,7 @@ func _input(event):
 
 # Fire tongue
 func fire_tongue():
-	if not is_extending and not is_retracting:
+	if not is_extending and not is_retracting and not Global.is_intermission:
 		is_extending = true
 		fire_time = 0.0
 		tongue.visible = true
@@ -148,5 +143,4 @@ func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
 		is_extending = false
 		is_retracting = true
 		fire_time = 0.0
-		
 		tongue_end = area.global_position - global_position

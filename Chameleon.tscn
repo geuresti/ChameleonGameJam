@@ -44,7 +44,7 @@ sprite_frames = SubResource("SpriteFrames_oajcp")
 
 [node name="Indicator" type="Sprite2D" parent="."]
 z_index = -2
-scale = Vector2(0.6875, 1)
+scale = Vector2(1.1, 1.599)
 texture = ExtResource("2_jabux")
 script = ExtResource("3_prowl")
 
@@ -55,24 +55,27 @@ position = Vector2(0, -13)
 shape = SubResource("CircleShape2D_prowl")
 
 [node name="RayCast2D" type="RayCast2D" parent="Indicator"]
+visible = false
 scale = Vector2(1.45455, 1)
 collision_mask = 2
 
 [node name="RayCastCollision" type="Sprite2D" parent="Indicator/RayCast2D"]
+visible = false
 scale = Vector2(0.208333, 0.208333)
 texture = ExtResource("4_unrpb")
 
 [node name="Tongue" type="Line2D" parent="."]
 z_index = -1
-width = 96.0
+width = 120.0
 texture = ExtResource("4_ntuaw")
 texture_mode = 1
 
 [node name="TongueHitBox" type="Area2D" parent="."]
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.2, 1.2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TongueHitBox"]
 self_modulate = Color(1, 0.246, 0.13, 1)
+scale = Vector2(1.5, 1.5)
 shape = SubResource("CircleShape2D_oajcp")
 
 [node name="Sprite2D" type="Sprite2D" parent="TongueHitBox"]
