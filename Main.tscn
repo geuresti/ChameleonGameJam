@@ -21,7 +21,7 @@ size = Vector2(684.75, 28)
 size = Vector2(1182, 26)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
-size = Vector2(390, 122.5)
+size = Vector2(378, 122.5)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cm0pq")
@@ -80,7 +80,7 @@ offset_top = 200.0
 offset_right = 668.0
 offset_bottom = 239.0
 theme_override_font_sizes/font_size = 28
-text = "Next Wave in: 3"
+text = "Next Wave in:"
 horizontal_alignment = 1
 
 [node name="HUD_BG" type="Sprite2D" parent="HUD"]

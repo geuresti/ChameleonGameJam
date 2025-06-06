@@ -31,10 +31,13 @@ var intermission_duration = 6
 var intermission_timer
 var start_intermission_timer = false
 
-var wave_duration = 26
+var wave_duration = 6 #36
 var wave_timer
 
 var flies = []
+
+var min_flies = 6
+var max_flies = 12
 
 const LEFT = 0
 const TOP = 1
@@ -45,20 +48,28 @@ var y : float
 var target : Vector2
 
 func _ready():
-	start_wave()
 	wave_timer = wave_duration
 	intermission_timer = intermission_duration
 	intermission_label.visible = false
+	intermission_label.modulate.a = 0.0
+	
+	# Starting with is_intermission = true prevents _process from ending
+	# the wave immediately due to zero flies
+	Global.is_intermission = true
+	
+	start_wave()
 
 func _process(delta):
 	if Global.is_intermission and start_intermission_timer:
+		#if Global.wave == 1:
+		#	intermission_label.text = "Starting Game In: %ds" % intermission_timer
+		#else:
 		intermission_label.text = "Next Wave In: %ds" % intermission_timer
 		intermission_timer -= delta
 		
 		if intermission_timer < 0:
-			intermission_label.visible = false
+			start_intermission_timer = false
 			start_wave()
-			intermission_timer = intermission_duration
 	
 	# Wave timer and label logic
 	elif wave_timer > 0:
@@ -127,14 +138,35 @@ func clear_flies():
 			fly.queue_free()
 	flies.clear()
 
+# Return the number of flies that should spawn.
+# This function will return 6 - 12, depending how much hunger is missing.
+# If hunger <= 25, the max number of flies will spawn.
+func calculate_number_of_flies():
+	var hunger_ratio = clamp(float(100 - Global.hunger) / 75, 0.0, 1.0)
+	var flies = int(round(lerp(min_flies, max_flies, hunger_ratio)))
+	return flies
+
 func start_wave():
+	# Fade text opacity to 0
+	var tween = create_tween()
+	tween.tween_property(intermission_label, "modulate:a", 0.0, 0.5).set_ease(Tween.EASE_IN_OUT)
+	
+	# Give the text time to fade out before toggling visiblity
+	await get_tree().create_timer(0.5).timeout
+	intermission_label.visible = false
+	
+	# Reset intermission timer
+	intermission_timer = intermission_duration
+	
+	# Update wave value and label
 	Global.wave += 1
 	Global.update_wave_label()
 	wave_timer = wave_duration
 	
-	# MIN 6, add more depending on how low on food the player is? w wiggle room. ?
-	flies_per_wave = 6
+	# Determine how many flies to spawn
+	flies_per_wave = calculate_number_of_flies()
 	
+	# Spawn flies
 	for i in flies_per_wave:
 		var fly = fly_scene.instantiate()
 		fly_spawner.add_child(fly)
@@ -153,7 +185,6 @@ func start_wave():
 	
 	await get_tree().create_timer(1.0).timeout
 	Global.is_intermission = false
-	start_intermission_timer = false
 
 func end_wave():
 	for fly in flies:
@@ -170,4 +201,8 @@ func end_wave():
 	
 	Global.difficulty += 1
 	start_intermission_timer = true
+	
+	# Tween the opacity for the label to fade text in
+	var tween = create_tween()
 	intermission_label.visible = true
+	tween.tween_property(intermission_label, "modulate:a", 1.0, 0.5).set_ease(Tween.EASE_IN_OUT)
