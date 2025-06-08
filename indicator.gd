@@ -1,17 +1,17 @@
 extends Sprite2D
 
-@export var indicator_offset_radius: int = 75
-@export var speed: int = 1
-
+@export var indicator_offset_radius := 85
+@export var speed := 1.5
 @onready var player_node = get_parent()
 @onready var chameleon = get_parent().get_node("Chameleon")
 @onready var tongue = get_parent().get_node("Tongue")
-
 @onready var tongue_hitbox = get_parent().get_node("TongueHitBox")
-
 @onready var indicator_tip = get_node("IndicatorTip")
-
 @onready var raycast = get_node("RayCast2D")
+
+var tongue_on_cooldown = false
+var cooldown_duration = 0.75
+var cooldown_timer = cooldown_duration
 
 var angle_range: float = 60.0
 
@@ -29,21 +29,24 @@ const FIRING = 1
 
 var t = 0.0
 
-var tongue_start := Vector2(0, Global.tongue_offset)
+var tongue_start := Vector2(0, -5)
 var tongue_end := Vector2()
 
 @onready var test = get_node("RayCast2D/RayCastCollision")
 
-func _ready():
-	# Add to singleton to make it globally accessible
+func _ready():	
 	Global.chameleon = chameleon
 	Global.tongue_hitbox = tongue_hitbox
-	
-	# Adjust tongue components so they are positioned behind the chameleon sprite
-	tongue_start.y -= Global.tongue_offset
-	tongue_hitbox.position.y -= Global.tongue_offset
 
 func _process(delta):
+	# Delay in between shots
+	if tongue_on_cooldown:
+		cooldown_timer -= delta
+		if cooldown_timer < 0:
+			tongue_on_cooldown = false
+			cooldown_visual_flash()
+			cooldown_timer = cooldown_duration
+	
 	test.global_position = raycast.get_collision_point()
 	
 	# If not firing and not currently in intermission
@@ -116,6 +119,7 @@ func _process(delta):
 			tongue.clear_points()
 			is_retracting = false
 			fire_time = 0.0
+			tongue_on_cooldown = true
 		# Retract tongue
 		else:
 			# Interpolate between base and tip by animation progress percentage
@@ -130,13 +134,23 @@ func _process(delta):
 func _input(event):
 	if event.is_action_pressed("fire_tongue"):
 		fire_tongue()
+	
+	# For testing
 	if event.is_action_pressed("ui_down"):
-		print("ui down")
-		tongue.clear_points()
+		Global.hunger -= 10
+	
+	if event.is_action_pressed("ui_up"):
+		Global.hunger += 10
+
+func cooldown_visual_flash():
+	var cooldown_tween = create_tween()
+	# Color flash
+	cooldown_tween.tween_property(chameleon, "self_modulate", Color(0, 0.53, 1, 1), 0.3)
+	cooldown_tween.tween_property(chameleon, "self_modulate", Color(1, 1, 1, 1), 0.3)
 
 # Fire tongue
 func fire_tongue():
-	if not is_extending and not is_retracting and not Global.is_intermission:
+	if not is_extending and not is_retracting and not Global.is_intermission and not tongue_on_cooldown:
 		is_extending = true
 		fire_time = 0.0
 		tongue.visible = true

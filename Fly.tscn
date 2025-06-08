@@ -1,10 +1,20 @@
-[gd_scene load_steps=7 format=3 uid="uid://1ffcnglab8gq"]
+[gd_scene load_steps=10 format=3 uid="uid://1ffcnglab8gq"]
 
 [ext_resource type="Texture2D" uid="uid://de7er700rqxtj" path="res://Sprites/fly.png" id="1_k8qhs"]
 [ext_resource type="Script" uid="uid://d3vho8ryqxaq" path="res://fly.gd" id="1_npdyd"]
+[ext_resource type="Shader" uid="uid://d18pr67qehfmd" path="res://Fly.gdshader" id="2_ca2or"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_npdyd"]
 radius = 6.66667
+
+[sub_resource type="GDScript" id="GDScript_npdyd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ca2or"]
+shader = ExtResource("2_ca2or")
+shader_parameter/line_color = Color(1, 1, 1, 1)
+shader_parameter/line_thickness = 1.0
+shader_parameter/modulate = Color(0.68, 0.68, 0.68, 1)
+script = SubResource("GDScript_npdyd")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_npdyd"]
 atlas = ExtResource("1_k8qhs")
@@ -30,7 +40,7 @@ animations = [{
 
 [node name="Fly" type="CharacterBody2D"]
 z_index = 20
-scale = Vector2(1.5, 1.5)
+scale = Vector2(2, 2)
 script = ExtResource("1_npdyd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -38,6 +48,7 @@ position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_npdyd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_ca2or")
 sprite_frames = SubResource("SpriteFrames_dgvws")
 frame_progress = 0.0516232
 

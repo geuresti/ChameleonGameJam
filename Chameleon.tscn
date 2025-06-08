@@ -39,7 +39,7 @@ radius = 3.0
 
 [node name="Chameleon" type="AnimatedSprite2D" parent="."]
 z_index = 10
-scale = Vector2(2.5, 2.5)
+scale = Vector2(3.2, 3.2)
 sprite_frames = SubResource("SpriteFrames_oajcp")
 
 [node name="Indicator" type="Sprite2D" parent="."]
@@ -71,6 +71,7 @@ texture = ExtResource("4_ntuaw")
 texture_mode = 1
 
 [node name="TongueHitBox" type="Area2D" parent="."]
+position = Vector2(0, -18)
 scale = Vector2(1.2, 1.2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TongueHitBox"]

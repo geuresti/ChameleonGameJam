@@ -5,6 +5,6 @@ func _ready():
 	if Global.debug:
 		info_label.visible = true
 		info_label.text = "GOLDEN: %d" % speed
-	food_value = 50
-	speed *= 2
-	point_value = speed * 2
+	food_value = 30
+	speed = max(speed * 2, 600)
+	point_value = speed * 1.5

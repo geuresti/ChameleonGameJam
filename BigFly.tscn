@@ -1,7 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://oqevu0ai4io6"]
+[gd_scene load_steps=6 format=3 uid="uid://oqevu0ai4io6"]
 
 [ext_resource type="PackedScene" uid="uid://1ffcnglab8gq" path="res://Fly.tscn" id="1_mmhhu"]
 [ext_resource type="Script" uid="uid://dxjcq5ktyorfo" path="res://big_fly.gd" id="2_k63fe"]
+[ext_resource type="Shader" uid="uid://d18pr67qehfmd" path="res://Fly.gdshader" id="3_cbvev"]
+
+[sub_resource type="GDScript" id="GDScript_npdyd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xfu55"]
+shader = ExtResource("3_cbvev")
+shader_parameter/line_color = Color(1, 1, 1, 1)
+shader_parameter/line_thickness = 0.6
+shader_parameter/modulate = Color(0.594156, 0.713838, 1, 1)
+script = SubResource("GDScript_npdyd")
 
 [node name="Fly" instance=ExtResource("1_mmhhu")]
 script = ExtResource("2_k63fe")
@@ -11,6 +21,7 @@ scale = Vector2(1.5, 1.5)
 
 [node name="AnimatedSprite2D" parent="." index="1"]
 self_modulate = Color(0.876861, 0.891209, 0.997442, 1)
+material = SubResource("ShaderMaterial_xfu55")
 scale = Vector2(1.5, 1.5)
 
 [node name="FlyHitbox" parent="." index="2"]

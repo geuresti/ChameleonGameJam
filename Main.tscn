@@ -30,9 +30,9 @@ script = ExtResource("1_cm0pq")
 modulate = Color(1, 1, 1, 0.737255)
 z_index = -100
 offset_left = -22.0
-offset_top = -75.0
+offset_top = -69.0
 offset_right = 1172.0
-offset_bottom = 801.0
+offset_bottom = 807.0
 texture = ExtResource("1_r0du0")
 
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]

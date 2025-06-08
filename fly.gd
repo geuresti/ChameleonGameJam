@@ -44,11 +44,12 @@ func _physics_process(delta):
 		
 		# Move the fly to the chameleon in retract_duration seconds
 		global_position = Global.tongue_hitbox.global_position
-		if global_position.distance_to(Global.chameleon.global_position) < 20:
+		if global_position.distance_to(Global.chameleon.global_position) < 40:
 			# Update score
 			Global.update_hunger(food_value)
 			Global.update_score(point_value)
 			queue_free()
+			Global.check_if_level_cleared_helper()
 	else:
 		collision = move_and_collide(velocity * delta)
 		if collision:
