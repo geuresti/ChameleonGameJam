@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://d3vho8ryqxaq" path="res://fly.gd" id="1_npdyd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_npdyd"]
-radius = 6.0
+radius = 6.66667
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_npdyd"]
 atlas = ExtResource("1_k8qhs")
@@ -47,6 +47,7 @@ frame_progress = 0.0516232
 polygon = PackedVector2Array(0, 7, -3, 7, -4, 6, -5, 4, -9, 1, -12, -2, -11, -6, -7, -7, -4, -5, -3, -2, -2, -1, 3, -1, 6, -2, 8, -5, 10, -7, 13, -6, 14, -3, 14, 0, 12, 2, 8, 3, 6, 4, 4, 6, 3, 7)
 
 [node name="Info" type="Label" parent="."]
+visible = false
 offset_left = -24.0
 offset_top = -25.6667
 offset_right = 24.0

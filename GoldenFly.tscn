@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://d23gcn3rjawlf"]
+
+[ext_resource type="PackedScene" uid="uid://1ffcnglab8gq" path="res://Fly.tscn" id="1_dyd6x"]
+[ext_resource type="Script" uid="uid://cp3puhcoaqaw2" path="res://golden_fly.gd" id="2_0offh"]
+
+[node name="Fly" instance=ExtResource("1_dyd6x")]
+self_modulate = Color(0.0904919, 0.882741, 1, 1)
+script = ExtResource("2_0offh")
+
+[node name="AnimatedSprite2D" parent="." index="1"]
+self_modulate = Color(1, 0.953, 0.06, 1)

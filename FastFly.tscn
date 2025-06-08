@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://drhko07pjvtub"]
+
+[ext_resource type="PackedScene" uid="uid://1ffcnglab8gq" path="res://Fly.tscn" id="1_8e6uk"]
+[ext_resource type="Script" uid="uid://ddk5f6oxmjv7g" path="res://fast_fly.gd" id="2_eqpwy"]
+
+[node name="Fly" instance=ExtResource("1_8e6uk")]
+script = ExtResource("2_eqpwy")
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(0, 1.33333)
+scale = Vector2(0.5, 0.5)
+
+[node name="AnimatedSprite2D" parent="." index="1"]
+self_modulate = Color(0.0174, 0.85579, 0.87, 1)
+scale = Vector2(0.5, 0.5)
+
+[node name="FlyHitbox" parent="." index="2"]
+scale = Vector2(0.5, 0.5)

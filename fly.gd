@@ -28,7 +28,10 @@ func _ready():
 	#velocity = Vector2(1,0) * speed
 	#randomize_direction()
 	animation_player.play()
-	info_label.text = "SPEED: %d" % speed
+	
+	if Global.debug:
+		info_label.text = "NORMAL: %d" % speed
+		info_label.visible = true
 
 func _physics_process(delta):	
 	# Get pulled by tongue
@@ -43,8 +46,7 @@ func _physics_process(delta):
 		global_position = Global.tongue_hitbox.global_position
 		if global_position.distance_to(Global.chameleon.global_position) < 20:
 			# Update score
-			#Global.update_score(10)
-			Global.hunger += food_value
+			Global.update_hunger(food_value)
 			Global.update_score(point_value)
 			queue_free()
 	else:

@@ -42,10 +42,10 @@ position = Vector2(571, 570)
 
 [node name="Score" type="Label" parent="HUD"]
 z_index = 1
-offset_left = 20.0
-offset_top = 502.0
-offset_right = 81.0
-offset_bottom = 525.0
+offset_left = 36.0
+offset_top = 504.0
+offset_right = 97.0
+offset_bottom = 527.0
 text = "Score: 0"
 
 [node name="HungerBar" type="ProgressBar" parent="HUD"]
@@ -60,18 +60,18 @@ fill_mode = 3
 
 [node name="Timer" type="Label" parent="HUD"]
 z_index = 1
-offset_left = 20.0
-offset_top = 552.0
-offset_right = 170.0
-offset_bottom = 575.0
+offset_left = 36.0
+offset_top = 554.0
+offset_right = 186.0
+offset_bottom = 577.0
 text = "Time Remaining: 0s"
 
 [node name="Wave" type="Label" parent="HUD"]
 z_index = 1
-offset_left = 20.0
-offset_top = 527.0
-offset_right = 80.0
-offset_bottom = 550.0
+offset_left = 36.0
+offset_top = 529.0
+offset_right = 96.0
+offset_bottom = 552.0
 text = "Wave: 1"
 
 [node name="Intermission" type="Label" parent="HUD"]
@@ -84,8 +84,8 @@ text = "Next Wave in:"
 horizontal_alignment = 1
 
 [node name="HUD_BG" type="Sprite2D" parent="HUD"]
-position = Vector2(96, 536)
-scale = Vector2(3.4, -2)
+position = Vector2(113.5, 538)
+scale = Vector2(3.46, -2)
 texture = ExtResource("4_fos0i")
 
 [node name="Borders" type="StaticBody2D" parent="."]
@@ -125,3 +125,5 @@ shape = SubResource("RectangleShape2D_3dxm6")
 debug_color = Color(0.977345, 0, 0.404842, 0.42)
 
 [node name="FlySpawner" type="Node2D" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]

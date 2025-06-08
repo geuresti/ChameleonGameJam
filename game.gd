@@ -1,7 +1,5 @@
 extends Node2D
 
-var fly_scene = preload("res://Fly.tscn")
-
 @onready var fly_spawn_area = get_node("FlySpawnArea/FlySpawnAreaShape")
 @onready var fly_spawner = get_node("FlySpawner")
 
@@ -21,6 +19,8 @@ var fly_scene = preload("res://Fly.tscn")
 
 @onready var intermission_label = get_node("HUD/Intermission")
 
+@onready var audio_player = get_node("AudioStreamPlayer2D")
+
 var dist_left : float
 var dist_top : float
 var dist_right : float
@@ -31,13 +31,13 @@ var intermission_duration = 6
 var intermission_timer
 var start_intermission_timer = false
 
-var wave_duration = 6 #36
+var wave_duration = 36
 var wave_timer
 
 var flies = []
 
-var min_flies = 6
-var max_flies = 12
+var min_flies = 7
+var max_flies = 13
 
 const LEFT = 0
 const TOP = 1
@@ -47,11 +47,23 @@ var x : float
 var y : float
 var target : Vector2
 
+var normal_fly = preload("res://Fly.tscn")
+var poison_fly = preload("res://PoisonFly.tscn")
+var golden_fly = preload("res://GoldenFly.tscn")
+var fast_fly = preload("res://FastFly.tscn")
+var big_fly = preload("res://BigFly.tscn")
+
+var fly_variants = [normal_fly, poison_fly, golden_fly, fast_fly, big_fly]
+var fly_weights = [1.3, 0.2, 0.1, 0.3, 0.3]
+var rng = RandomNumberGenerator.new()
+
 func _ready():
 	wave_timer = wave_duration
 	intermission_timer = intermission_duration
 	intermission_label.visible = false
 	intermission_label.modulate.a = 0.0
+	
+	Global.audio_player = audio_player
 	
 	# Starting with is_intermission = true prevents _process from ending
 	# the wave immediately due to zero flies
@@ -61,9 +73,6 @@ func _ready():
 
 func _process(delta):
 	if Global.is_intermission and start_intermission_timer:
-		#if Global.wave == 1:
-		#	intermission_label.text = "Starting Game In: %ds" % intermission_timer
-		#else:
 		intermission_label.text = "Next Wave In: %ds" % intermission_timer
 		intermission_timer -= delta
 		
@@ -146,6 +155,11 @@ func calculate_number_of_flies():
 	var flies = int(round(lerp(min_flies, max_flies, hunger_ratio)))
 	return flies
 
+# Choose a random fly variant based on their weights
+func pick_random_fly():
+	var random_fly = fly_variants[rng.rand_weighted(fly_weights)]
+	return random_fly
+
 func start_wave():
 	# Fade text opacity to 0
 	var tween = create_tween()
@@ -166,9 +180,12 @@ func start_wave():
 	# Determine how many flies to spawn
 	flies_per_wave = calculate_number_of_flies()
 	
+	#var fly
+	
 	# Spawn flies
 	for i in flies_per_wave:
-		var fly = fly_scene.instantiate()
+		#var fly = golden_fly.instantiate()
+		var fly = pick_random_fly().instantiate()
 		fly_spawner.add_child(fly)
 		fly.global_position = get_random_spawn_position()
 		

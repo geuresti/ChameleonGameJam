@@ -46,8 +46,9 @@ func _ready():
 func _process(delta):
 	test.global_position = raycast.get_collision_point()
 	
-	# Swing the indicator back and forth while tongue is not extending or retracting
+	# If not firing and not currently in intermission
 	if not is_extending and not is_retracting and not Global.is_intermission:
+		# Swing the indicator back and forth while tongue is not extending or retracting
 		self.visible = true
 		time += delta * speed
 		angle = deg_to_rad(sin(time) * angle_range)
@@ -60,13 +61,16 @@ func _process(delta):
 		var direction = (indicator_tip.global_position - global_position - chameleon.global_position).rotated(deg_to_rad(45))
 		raycast.target_position = direction * 700
 		
-		tongue_hitbox.visible = false
-		
 		# Raycast should always be hitting one of the borders
 		if raycast.is_colliding():
 			tongue_end = raycast.get_collision_point() - chameleon.global_position
 	else:
 		self.visible = false
+	
+	# Hide hitbox sprite when not firing
+	if not is_extending and not is_retracting:
+		tongue_hitbox.visible = false
+	else:
 		tongue_hitbox.visible = true
 
 	# Tongue extension
