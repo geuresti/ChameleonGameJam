@@ -35,33 +35,44 @@ var pause_hunger = false
 var hunger_flashing = false
 var hunger_flash_tween: Tween
 
-var audio_player: AudioStreamPlayer2D
+var audio_consume: AudioStreamPlayer2D
+var audio_tongue_shot: AudioStreamPlayer2D
+
+var audio_tongue_retract: AudioStreamPlayer2D
+var audio_miss: AudioStreamPlayer2D
+var audio_lose: AudioStreamPlayer2D
+var audio_background_music: AudioStreamPlayer2D
+
 var fly_spawner: Node2D
 
+var playing = true
 var level_cleared := false
 
 func _ready():
 	hunger_bar.value = 100
 
 func _process(delta):
-	# Make the hunger bar flash when low
-	if hunger > 0:
-		if not is_intermission and not pause_hunger:
-			hunger -= hunger_rate * delta
-			hunger = max(hunger, 0)
-			hunger_bar.value = hunger
-			
-		if hunger < 25:
-			if not hunger_flashing:
-				hunger_flashing = true
-				low_hunger_flash()
+	if playing:
+		if hunger > 0:
+			if not is_intermission and not pause_hunger:
+				hunger -= hunger_rate * delta
+				hunger = max(hunger, 0)
+				hunger_bar.value = hunger
+				
+			# Make the hunger bar flash when low
+			if hunger < 25:
+				if not hunger_flashing:
+					hunger_flashing = true
+					low_hunger_flash()
+			else:
+				# Pause the hunger bar flash
+				hunger_flashing = false
+				if hunger_flash_tween:
+						hunger_flash_tween.kill()
+						# Reset the color
+						hunger_bar.modulate = Color(1, 1, 1, 1)
 		else:
-			hunger_flashing = false
-			if hunger_flash_tween:
-					hunger_flash_tween.kill()
-					hunger_bar.modulate = Color(1, 1, 1, 1)  # Reset the color
-	else:
-		game_over()
+			game_over()
 
 func update_hunger(food_value):
 	var tween = create_tween()
@@ -83,9 +94,8 @@ func update_hunger(food_value):
 
 func animate_wave_timer():
 	if wave_timer > 0:
-		#countdown = wave_timer
 		var tween = create_tween()
-		tween.tween_method(_update_countdown, wave_timer, 0.0, 1)#.set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
+		tween.tween_method(_update_countdown, wave_timer, 0.0, 1)
 		tween.tween_callback(Callable(self, "_on_countdown_finished"))
 		
 func _update_countdown(value: float) -> void:
@@ -129,6 +139,8 @@ func update_wave_label():
 
 func game_over():
 	#print("GAME OVER")
+	playing = false
+	audio_lose.play()
 	pass
 
 # Check if the level is cleared after a brief delay to give flies time to be removed

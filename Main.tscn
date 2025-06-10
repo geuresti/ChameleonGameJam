@@ -1,9 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://d4lgjyvh76sqk"]
+[gd_scene load_steps=17 format=3 uid="uid://d4lgjyvh76sqk"]
 
 [ext_resource type="Script" uid="uid://ctxwxf0nttbqn" path="res://game.gd" id="1_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://ciwrsfwu27kyo" path="res://Chameleon.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://gyqh3mcs7v1g" path="res://Sprites/Rainforest.png" id="1_r0du0"]
 [ext_resource type="Texture2D" uid="uid://cj72jswyklq8m" path="res://Sprites/placeholder.png" id="4_fos0i"]
+[ext_resource type="AudioStream" uid="uid://yyacd06f5b4j" path="res://Audio/consume.wav" id="5_fos0i"]
+[ext_resource type="AudioStream" uid="uid://c4qdtt04e8n31" path="res://Audio/shot.wav" id="6_3dxm6"]
+[ext_resource type="AudioStream" uid="uid://d1x6hquvymmq6" path="res://Audio/retract.wav" id="6_lgr22"]
+[ext_resource type="AudioStream" uid="uid://djn03s3f8gyov" path="res://Audio/lose.wav" id="6_wkp8b"]
+[ext_resource type="AudioStream" uid="uid://cbvunx58lgtxb" path="res://Audio/bg_music.wav" id="9_20pc6"]
+[ext_resource type="AudioStream" uid="uid://lhcrbyxbpjo7" path="res://Audio/fart.wav" id="10_5vvyt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uu6xs"]
 bg_color = Color(0.936458, 0.432818, 0, 1)
@@ -126,4 +132,25 @@ debug_color = Color(0.977345, 0, 0.404842, 0.42)
 
 [node name="FlySpawner" type="Node2D" parent="."]
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioConsume" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_fos0i")
+volume_db = -9.0
+
+[node name="AudioLose" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_wkp8b")
+volume_db = -8.0
+
+[node name="AudioTongueRetract" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_lgr22")
+
+[node name="AudioTongueShot" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_3dxm6")
+
+[node name="AudioBackgroundMusic" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_20pc6")
+volume_db = -10.0
+autoplay = true
+
+[node name="AudioMiss" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_5vvyt")
+volume_db = 5.0

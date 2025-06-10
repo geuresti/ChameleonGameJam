@@ -5,6 +5,7 @@ var shader_material: ShaderMaterial
 
 func _ready():
 	shader_material = animation_player.material
+	
 	animation_player.play()
 	if Global.debug:
 		info_label.visible = true
@@ -20,11 +21,12 @@ func low_hp_flash():
 	hp_tween.set_loops()
 	
 	# Color flash
-	hp_tween.tween_property(shader_material, "shader_parameter/modulate", Color.AQUA, 0.4)
-	hp_tween.tween_property(shader_material, "shader_parameter/modulate", Color(1, 1, 1, 1), 0.4)
+	hp_tween.tween_property(shader_material, "shader_parameter/modulate", Color.WEB_PURPLE, 0.6)
+	hp_tween.tween_property(shader_material, "shader_parameter/modulate", Color.MEDIUM_PURPLE, 0.6)
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.name == "TongueHitBox":
+		print("fartmongus")
 		if previously_hit_by_tongue:
 			is_being_pulled = true
 			# Ignore bottom border, which normally causes the fly to bounce off

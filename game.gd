@@ -19,7 +19,12 @@ extends Node2D
 
 @onready var intermission_label = get_node("HUD/Intermission")
 
-@onready var audio_player = get_node("AudioStreamPlayer2D")
+@onready var audio_consume = get_node("AudioConsume")
+@onready var audio_tongue_shot = get_node("AudioTongueShot")
+@onready var audio_tongue_retract = get_node("AudioTongueRetract")
+@onready var audio_lose = get_node("AudioLose")
+@onready var audio_miss = get_node("AudioMiss")
+@onready var audio_background_music = get_node("AudioBackgroundMusic")
 
 var dist_left : float
 var dist_top : float
@@ -56,14 +61,20 @@ var fast_fly = preload("res://FastFly.tscn")
 var big_fly = preload("res://BigFly.tscn")
 
 var fly_variants = [normal_fly, poison_fly, golden_fly, fast_fly, big_fly]
-var fly_weights = [1.3, 0.3, 0.1, 0.5, 0.4]
+var fly_weights = [1.5, 0.3, 0.1, 0.4, 0.4]
 var rng = RandomNumberGenerator.new()
 
 func _ready():
 	intermission_label.visible = false
 	intermission_label.modulate.a = 0.0
 	
-	Global.audio_player = audio_player
+	Global.audio_consume = audio_consume
+	Global.audio_tongue_shot = audio_tongue_shot
+	Global.audio_tongue_retract = audio_tongue_retract
+	Global.audio_lose = audio_lose
+	Global.audio_miss = audio_miss
+	Global.audio_background_music = audio_background_music
+	
 	Global.fly_spawner = fly_spawner
 	
 	Global.timer_label = timer_label
@@ -188,7 +199,7 @@ func start_wave():
 	var fly
 	
 	# Spawn flies
-	for i in 1:
+	for i in flies_per_wave:
 		fly = pick_random_fly().instantiate()
 		
 		fly_spawner.add_child(fly)
@@ -219,6 +230,7 @@ func end_wave():
 	
 	# Increase the score based on remaining time
 	if wave_timer > 0:
+		Global.wave_timer = wave_timer
 		Global.animate_wave_timer()
 		Global.update_score(wave_timer * 100)
 	

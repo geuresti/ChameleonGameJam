@@ -7,10 +7,11 @@
 [sub_resource type="GDScript" id="GDScript_npdyd"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xfu55"]
+resource_local_to_scene = true
 shader = ExtResource("3_cbvev")
 shader_parameter/line_color = Color(1, 1, 1, 1)
 shader_parameter/line_thickness = 0.6
-shader_parameter/modulate = Color(0.594156, 0.713838, 1, 1)
+shader_parameter/modulate = Color(0.523, 0.47, 1, 1)
 script = SubResource("GDScript_npdyd")
 
 [node name="Fly" instance=ExtResource("1_mmhhu")]

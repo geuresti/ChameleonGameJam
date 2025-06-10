@@ -92,6 +92,7 @@ func _process(delta):
 			is_extending = false
 			is_retracting = true
 			fire_time = 0.0
+			Global.audio_miss.play(0.25)
 		
 		# Extend the tongue from the start to end position
 		var curr_tongue_tip = tongue_start.lerp(tongue_end, t)
@@ -154,6 +155,7 @@ func fire_tongue():
 		is_extending = true
 		fire_time = 0.0
 		tongue.visible = true
+		Global.audio_tongue_shot.play()
 
 # Fly caught by tongue
 func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
@@ -162,3 +164,4 @@ func _on_tongue_hit_box_area_entered(area: Area2D) -> void:
 		is_retracting = true
 		fire_time = 0.0
 		tongue_end = area.global_position - global_position
+		Global.audio_tongue_retract.play()

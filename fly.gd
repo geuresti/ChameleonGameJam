@@ -48,6 +48,7 @@ func _physics_process(delta):
 			# Update score
 			Global.update_hunger(food_value)
 			Global.update_score(point_value)
+			Global.audio_consume.play()
 			queue_free()
 			Global.check_if_level_cleared_helper()
 	else:
