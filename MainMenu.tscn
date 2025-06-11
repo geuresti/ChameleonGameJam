@@ -15,6 +15,7 @@ script = ExtResource("1_i26rj")
 [node name="Background" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.737255)
 z_index = -100
+layout_mode = 0
 offset_left = -14.0
 offset_top = -69.0
 offset_right = 1180.0
@@ -47,10 +48,22 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "Play"
 
+[node name="HighScores" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "High Scores"
+
+[node name="HowToPlay" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "How To Play"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HighScores" to="." method="_on_high_scores_pressed"]
+[connection signal="pressed" from="VBoxContainer/HowToPlay" to="." method="_on_how_to_play_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

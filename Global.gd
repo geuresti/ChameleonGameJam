@@ -48,9 +48,11 @@ var fly_spawner: Node2D
 var playing = false
 var level_cleared := false
 
-func _ready():
-	#hunger_bar.value = 100
-	pass
+const SAVEFILE = "user://scores.save"
+var high_scores = []
+
+func _init():
+	load_high_scores()
 
 func _process(delta):
 	if playing:
@@ -152,3 +154,27 @@ func check_if_level_cleared():
 			if fly is not PoisonFly:
 				return false
 		return true
+
+func load_high_scores():
+	var file = FileAccess.open(SAVEFILE, FileAccess.READ)
+	if file:
+		var data = file.get_as_text()
+		high_scores = JSON.parse_string(data)
+		file.close()
+	else:
+		high_scores = []
+
+func save_high_scores():
+	var file = FileAccess.open(SAVEFILE, FileAccess.WRITE)
+	file.store_string(JSON.stringify(high_scores))
+	file.close()
+
+func add_new_score():
+	high_scores.append(int(score))
+	high_scores.sort()
+	high_scores.reverse()
+	high_scores = high_scores.slice(0, 5)
+	save_high_scores()
+
+func get_high_scores():
+	return high_scores

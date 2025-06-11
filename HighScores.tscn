@@ -1,0 +1,83 @@
+[gd_scene load_steps=3 format=3 uid="uid://0ouvqw7h6bia"]
+
+[ext_resource type="Script" uid="uid://dy1vvwv38ahx3" path="res://high_scores.gd" id="1_3y4vg"]
+[ext_resource type="Texture2D" uid="uid://gyqh3mcs7v1g" path="res://Sprites/Rainforest.png" id="2_urii1"]
+
+[node name="HighScores" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3y4vg")
+
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.737255)
+z_index = -100
+offset_left = -14.0
+offset_top = -69.0
+offset_right = 1180.0
+offset_bottom = 807.0
+texture = ExtResource("2_urii1")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+offset_left = 376.0
+offset_top = 202.0
+offset_right = 777.0
+offset_bottom = 265.0
+theme_override_font_sizes/font_size = 45
+text = "High Scores"
+horizontal_alignment = 1
+
+[node name="MainMenu" type="Button" parent="."]
+layout_mode = 2
+offset_left = 421.0
+offset_top = 134.0
+offset_right = 727.0
+offset_bottom = 177.0
+theme_override_font_sizes/font_size = 25
+text = "Back to Main Menu"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.396
+anchor_top = 0.441
+anchor_right = 0.607
+anchor_bottom = 0.75
+offset_left = -0.192017
+offset_top = 0.231995
+offset_right = -0.264038
+offset_bottom = -3.05176e-05
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "1."
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "2."
+
+[node name="Label3" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "3."
+
+[node name="Label4" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "4."
+
+[node name="Label5" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "5."
+
+[connection signal="pressed" from="MainMenu" to="." method="_on_main_menu_pressed"]

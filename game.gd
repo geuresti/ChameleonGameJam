@@ -286,6 +286,7 @@ func end_wave():
 
 func game_over():
 	audio_lose.play()
+	Global.add_new_score()
 	var tween = create_tween()
 	tween.tween_property(game_over_overlay, "self_modulate:a", 1.0, 0.5)
 	tween.tween_property(game_over_overlay_text, "modulate:a", 1.0, 0.5)
