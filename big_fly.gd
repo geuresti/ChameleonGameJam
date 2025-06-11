@@ -26,7 +26,6 @@ func low_hp_flash():
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.name == "TongueHitBox":
-		print("fartmongus")
 		if previously_hit_by_tongue:
 			is_being_pulled = true
 			# Ignore bottom border, which normally causes the fly to bounce off

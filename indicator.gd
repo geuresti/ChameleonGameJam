@@ -151,7 +151,7 @@ func cooldown_visual_flash():
 
 # Fire tongue
 func fire_tongue():
-	if not is_extending and not is_retracting and not Global.is_intermission and not tongue_on_cooldown:
+	if not is_extending and not is_retracting and not Global.is_intermission and not tongue_on_cooldown and Global.playing:
 		is_extending = true
 		fire_time = 0.0
 		tongue.visible = true

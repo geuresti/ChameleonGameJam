@@ -12,10 +12,16 @@ extends Node2D
 @onready var y_end = fly_spawn_area.global_position.y + spawn_area_size.y
 
 @onready var timer_label = get_node("/root/Main/HUD/Timer")
+@onready var wave_label = get_node("/root/Main/HUD/Wave")
+@onready var score_label = get_node("/root/Main/HUD/Score")
+@onready var hunger_bar = get_node("/root/Main/HUD/HungerBar")
+@onready var hud_background = get_node("/root/Main/HUD/HUD_BG")
+@onready var player = get_node("Player")
 
 @onready var border_left = get_node("Borders/LeftBorder")
 @onready var border_top = get_node("Borders/TopBorder")
 @onready var border_right = get_node("Borders/RightBorder")
+@onready var border_bottom = get_node("StaticBody2D")
 
 @onready var intermission_label = get_node("HUD/Intermission")
 
@@ -25,6 +31,9 @@ extends Node2D
 @onready var audio_lose = get_node("AudioLose")
 @onready var audio_miss = get_node("AudioMiss")
 @onready var audio_background_music = get_node("AudioBackgroundMusic")
+
+@onready var game_over_overlay = get_node("GameOverOverlay/ColorRect")
+@onready var game_over_overlay_text = get_node("GameOverOverlay/VBoxContainer")
 
 var dist_left : float
 var dist_top : float
@@ -68,6 +77,8 @@ func _ready():
 	intermission_label.visible = false
 	intermission_label.modulate.a = 0.0
 	
+	Global.wave = 0
+	
 	Global.audio_consume = audio_consume
 	Global.audio_tongue_shot = audio_tongue_shot
 	Global.audio_tongue_retract = audio_tongue_retract
@@ -80,31 +91,57 @@ func _ready():
 	Global.timer_label = timer_label
 	Global.wave_timer = wave_timer
 	
+	Global.score_label = score_label
+	Global.wave_label = wave_label
+	Global.hunger_bar = hunger_bar
+	Global.hunger_bar.value = 100
+	
+	game_over_overlay.self_modulate.a = 0.0
+	game_over_overlay_text.modulate.a = 0.0
+	
+	score_label.modulate.a = 0.0
+	timer_label.modulate.a = 0.0
+	wave_label.modulate.a = 0.0
+	
+	hud_background.self_modulate.a = 0.0
+	hunger_bar.self_modulate.a = 0.0
+	player.modulate.a = 0.0
+	border_bottom.global_position.x = -1200.0
+	
+	fade_in_UI()
+
+	Global.playing = true
 	# Starting with is_intermission = true prevents _process from ending
 	# the wave immediately due to zero flies
 	Global.is_intermission = true
+	
+	await get_tree().create_timer(1.5).timeout
 	start_wave()
 
 func _process(delta):
+	if Global.playing:
+		if Global.hunger <= 0:
+			Global.playing = false
+			game_over()
 	
-	if Global.is_intermission and start_intermission_timer:
-		intermission_label.text = "Next Wave In: %ds" % intermission_timer
-		intermission_timer -= delta
+		if Global.is_intermission and start_intermission_timer:
+			intermission_label.text = "Next Wave In: %ds" % intermission_timer
+			intermission_timer -= delta
+			
+			if intermission_timer < 0:
+				start_intermission_timer = false
+				start_wave()
 		
-		if intermission_timer < 0:
-			start_intermission_timer = false
-			start_wave()
-	
-	# Wave timer and label logic
-	elif wave_timer > 0 and not Global.is_intermission:
-		timer_label.text = "Time Remaining: %ds" % wave_timer
-		wave_timer -= delta
-	
-	# If the wave timer hit 0 or all the flies were caught
-	if not Global.is_intermission:
-		if (wave_timer < 0) or (Global.level_cleared):
-			Global.is_intermission = true
-			end_wave()
+		# Wave timer and label logic
+		elif wave_timer > 0 and not Global.is_intermission:
+			timer_label.text = "Time Remaining: %ds" % wave_timer
+			wave_timer -= delta
+		
+		# If the wave timer hit 0 or all the flies were caught
+		if not Global.is_intermission:
+			if (wave_timer < 0) or (Global.level_cleared):
+				Global.is_intermission = true
+				end_wave()
 
 func get_random_stage_pos():
 	x = randf_range(x_start, x_end)
@@ -246,3 +283,36 @@ func end_wave():
 	var tween = create_tween()
 	intermission_label.visible = true
 	tween.tween_property(intermission_label, "modulate:a", 1.0, 0.5).set_ease(Tween.EASE_IN_OUT)
+
+func game_over():
+	audio_lose.play()
+	var tween = create_tween()
+	tween.tween_property(game_over_overlay, "self_modulate:a", 1.0, 0.5)
+	tween.tween_property(game_over_overlay_text, "modulate:a", 1.0, 0.5)
+	Global.playing = false
+
+var fade_in_time = 0.2
+func fade_in_UI():
+	var tween = create_tween()
+	tween.tween_property(border_bottom, "position:x", 0.0, 0.5)
+	tween.tween_property(hud_background, "self_modulate:a", 1.0, fade_in_time)
+	
+	tween.tween_property(score_label, "modulate:a", 1.0, fade_in_time)
+	tween.tween_property(wave_label, "modulate:a", 1.0, fade_in_time)
+	tween.tween_property(timer_label, "modulate:a", 1.0, fade_in_time)
+	
+	tween.tween_property(player, "modulate:a", 1.0, fade_in_time)
+	tween.tween_property(hunger_bar, "self_modulate:a", 1.0, fade_in_time)
+
+func _on_play_button_pressed() -> void:
+	Global.hunger = 100
+	Global.score = 0
+	get_tree().change_scene_to_file("res://Main.tscn")
+
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()
+
+func _on_button_pressed() -> void:
+	Global.hunger = 100
+	Global.score = 0
+	get_tree().change_scene_to_file("res://MainMenu.tscn")

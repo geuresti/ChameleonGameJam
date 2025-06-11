@@ -35,9 +35,9 @@ script = ExtResource("1_cm0pq")
 [node name="Background" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.737255)
 z_index = -100
-offset_left = -22.0
+offset_left = -14.0
 offset_top = -69.0
-offset_right = 1172.0
+offset_right = 1180.0
 offset_bottom = 807.0
 texture = ExtResource("1_r0du0")
 
@@ -81,10 +81,10 @@ offset_bottom = 552.0
 text = "Wave: 1"
 
 [node name="Intermission" type="Label" parent="HUD"]
-offset_left = 458.0
-offset_top = 200.0
-offset_right = 668.0
-offset_bottom = 239.0
+offset_left = 464.0
+offset_top = 254.0
+offset_right = 674.0
+offset_bottom = 293.0
 theme_override_font_sizes/font_size = 28
 text = "Next Wave in:"
 horizontal_alignment = 1
@@ -123,7 +123,7 @@ scale = Vector2(24.2, 0.16)
 texture = ExtResource("4_fos0i")
 
 [node name="FlySpawnArea" type="Area2D" parent="."]
-position = Vector2(562, 243)
+position = Vector2(568, 243)
 
 [node name="FlySpawnAreaShape" type="CollisionShape2D" parent="FlySpawnArea"]
 position = Vector2(0, -30)
@@ -154,3 +154,55 @@ autoplay = true
 [node name="AudioMiss" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("10_5vvyt")
 volume_db = 5.0
+
+[node name="GameOverOverlay" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="GameOverOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -10.0
+offset_top = -11.0
+offset_right = 11.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.09, 0.09, 0.686275)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverOverlay"]
+anchors_preset = -1
+anchor_left = 0.394
+anchor_top = 0.346
+anchor_right = 0.606
+anchor_bottom = 0.654
+offset_left = -7.88803
+offset_top = -23.208
+offset_right = -7.112
+offset_bottom = -23.792
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="GameOver" type="Label" parent="GameOverOverlay/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Game Over"
+
+[node name="Button" type="Button" parent="GameOverOverlay/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Main Menu"
+
+[node name="PlayButton" type="Button" parent="GameOverOverlay/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Try Again"
+
+[node name="QuitButton" type="Button" parent="GameOverOverlay/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Quit"
+
+[connection signal="pressed" from="GameOverOverlay/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="GameOverOverlay/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="GameOverOverlay/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

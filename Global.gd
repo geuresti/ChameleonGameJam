@@ -14,9 +14,9 @@ var debug = false
 var retract_duration := 0.5
 var extend_duration = 1.0
 
-@onready var score_label = get_node("/root/Main/HUD/Score")
-@onready var wave_label = get_node("/root/Main/HUD/Wave")
-@onready var hunger_bar = get_node("/root/Main/HUD/HungerBar")
+var score_label
+var wave_label
+var hunger_bar
 
 var timer_label
 var wave_timer
@@ -45,11 +45,12 @@ var audio_background_music: AudioStreamPlayer2D
 
 var fly_spawner: Node2D
 
-var playing = true
+var playing = false
 var level_cleared := false
 
 func _ready():
-	hunger_bar.value = 100
+	#hunger_bar.value = 100
+	pass
 
 func _process(delta):
 	if playing:
@@ -71,8 +72,8 @@ func _process(delta):
 						hunger_flash_tween.kill()
 						# Reset the color
 						hunger_bar.modulate = Color(1, 1, 1, 1)
-		else:
-			game_over()
+		#else:
+		#	game_over()
 
 func update_hunger(food_value):
 	var tween = create_tween()
@@ -136,12 +137,6 @@ func update_score_label(new_score):
 
 func update_wave_label():
 	wave_label.text = "Wave: %d" % wave
-
-func game_over():
-	#print("GAME OVER")
-	playing = false
-	audio_lose.play()
-	pass
 
 # Check if the level is cleared after a brief delay to give flies time to be removed
 func check_if_level_cleared_helper():
