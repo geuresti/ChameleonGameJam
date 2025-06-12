@@ -135,13 +135,6 @@ func _process(delta):
 func _input(event):
 	if event.is_action_pressed("fire_tongue"):
 		fire_tongue()
-	
-	# For testing
-	if event.is_action_pressed("ui_down"):
-		Global.hunger -= 10
-	
-	if event.is_action_pressed("ui_up"):
-		Global.hunger += 10
 
 func cooldown_visual_flash():
 	var cooldown_tween = create_tween()

@@ -53,7 +53,7 @@ var flies = []
 var level_clear = false
 
 var min_flies = 6
-var max_flies = 11
+var max_flies = 10
 
 const LEFT = 0
 const TOP = 1
@@ -201,7 +201,7 @@ func clear_flies():
 	flies.clear()
 
 # Return the number of flies that should spawn.
-# This function will return 6 - 12, depending how much hunger is missing.
+# This function will return 6 - 10, depending how much hunger is missing.
 # If hunger <= 25, the max number of flies will spawn.
 func calculate_number_of_flies():
 	var hunger_ratio = clamp(float(100 - Global.hunger) / 75, 0.0, 1.0)
@@ -317,3 +317,15 @@ func _on_button_pressed() -> void:
 	Global.hunger = 100
 	Global.score = 0
 	get_tree().change_scene_to_file("res://MainMenu.tscn")
+
+# For testing
+func _input(event):
+	if event.is_action_pressed("ui_down"):
+		Global.hunger -= 10
+	
+	if event.is_action_pressed("ui_up"):
+		Global.hunger += 10
+	
+	if event.is_action_pressed("ui_right"):
+		Global.is_intermission = true
+		end_wave()

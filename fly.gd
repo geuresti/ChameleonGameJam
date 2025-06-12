@@ -5,7 +5,7 @@ var random_dir := Vector2.ZERO
 # The lower the number, the more often it changes direction
 var craziness = randf_range(0.5, 5)
 
-var speed_median : float = 30 * (Global.difficulty * 0.75)
+var speed_median : float = 30 * (Global.difficulty * 0.9)
 
 # The more erratic a fly is, the faster it is
 var speed = randf_range(speed_median * 0.7, speed_median * 1.3) 

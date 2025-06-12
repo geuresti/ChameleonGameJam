@@ -10,7 +10,7 @@ func _ready():
 	if Global.debug:
 		info_label.visible = true
 		info_label.text = "BIG: %d" % speed
-	food_value = 35
+	food_value = 22
 	speed *= 0.65
 	point_value = speed * 1.2
 
